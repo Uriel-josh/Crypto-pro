@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <title>CryptoPro - Professional Bitcoin Investment Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #f7931a;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #f7931a;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+            background: radial-gradient(circle at 20% 50%, rgba(247, 147, 26, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #f7931a, #ffb347);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 10px rgba(247, 147, 26, 0.5)); }
+            to { filter: drop-shadow(0 0 20px rgba(247, 147, 26, 0.8)); }
+        }
+
+        .hero-text p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #b0b0b0;
+            line-height: 1.6;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, #f7931a, #ffb347);
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(247, 147, 26, 0.3);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(247, 147, 26, 0.5);
+        }
+
+        /* Market Data */
+        .market-data {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .market-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(247, 147, 26, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #f7931a;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        #chartContainer {
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        /* Pricing Plans */
+        .pricing {
+            padding: 5rem 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: #f7931a;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(247, 147, 26, 0.2);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid #f7931a;
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: "Most Popular";
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f7931a;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #f7931a;
+        }
+
+        .plan-price {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .plan-period {
+            color: #b0b0b0;
+            margin-bottom: 2rem;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .plan-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .plan-features li:last-child {
+            border-bottom: none;
+        }
+
+        .plan-features li::before {
+            content: "✓";
+            color: #f7931a;
+            font-weight: bold;
+            margin-right: 0.5rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 5rem 0;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #f7931a, #ffb347);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .author-info h4 {
+            color: #f7931a;
+            margin-bottom: 0.2rem;
+        }
+
+        .author-info p {
+            color: #b0b0b0;
+            font-size: 0.9rem;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .stars {
+            color: #f7931a;
+            margin-bottom: 1rem;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #f7931a;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p, .footer-section a {
+            color: #b0b0b0;
+            text-decoration: none;
+            line-height: 1.6;
+            font-family: 'Great Vibes', cursive;
+        }
+
+        .footer-section a:hover {
+            color: #f7931a;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pricing-card.featured {
+                transform: none;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">CryptoPro</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#testimonials">Reviews</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Professional Bitcoin Investment Platform</h1>
+                    <p>Join thousands of investors who trust CryptoPro for secure, profitable Bitcoin investments. Our expert team provides 24/7 support and proven strategies to maximize your returns.</p>
+                    <a href="#pricing" class="cta-button pulse">Start Investing Today</a>
+                </div>
+                <div class="market-data">
+                    <h3 style="text-align: center; margin-bottom: 1rem; color: #f7931a;">Live Market Data</h3>
+                    <div class="market-stats">
+                        <div class="stat-card">
+                            <div class="stat-value" id="btc-price">$95,847</div>
+                            <div class="stat-label">Bitcoin Price</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="btc-change">+2.34%</div>
+                            <div class="stat-label">24h Change</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">$1.2T</div>
+                            <div class="stat-label">Market Cap</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">$28.5B</div>
+                            <div class="stat-label">24h Volume</div>
+                        </div>
+                    </div>
+                    <div id="chartContainer">
+                        <canvas id="priceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <h2 class="section-title">Investment Plans</h2>
+            <p style="text-align: center; color: #b0b0b0; font-size: 1.1rem; margin-bottom: 2rem; font-family: 'Great Vibes', cursive;">Choose the perfect plan for your investment goals</p>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card fade-in">
+                    <div class="plan-name">Starter</div>
+                    <div class="plan-price">$500</div>
+                    <div class="plan-period">Minimum Investment</div>
+                    <ul class="plan-features">
+                        <li>5% Monthly Returns</li>
+                        <li>Basic Market Analysis</li>
+                        <li>Email Support</li>
+                        <li>Weekly Reports</li>
+                        <li>Mobile App Access</li>
+                    </ul>
+                    <a href="#" class="cta-button">Get Started</a>
+                </div>
+
+                <div class="pricing-card fade-in">
+                    <div class="plan-name">Professional</div>
+                    <div class="plan-price">$2,500</div>
+                    <div class="plan-period">Minimum Investment</div>
+                    <ul class="plan-features">
+                        <li>8% Monthly Returns</li>
+                        <li>Advanced Market Analysis</li>
+                        <li>Priority Support</li>
+                        <li>Daily Reports</li>
+                        <li>Dedicated Account Manager</li>
+                        <li>Risk Management Tools</li>
+                    </ul>
+                    <a href="#" class="cta-button">Get Started</a>
+                </div>
+
+                <div class="pricing-card featured fade-in">
+                    <div class="plan-name">Premium</div>
+                    <div class="plan-price">$5,000</div>
+                    <div class="plan-period">Minimum Investment</div>
+                    <ul class="plan-features">
+                        <li>10% Monthly Returns</li>
+                        <li>Expert Market Analysis</li>
+                        <li>24/7 Priority Support</li>
+                        <li>Real-time Reports</li>
+                        <li>Personal Investment Advisor</li>
+                        <li>Advanced Risk Management</li>
+                        <li>Exclusive Trading Signals</li>
+                    </ul>
+                    <a href="#" class="cta-button">Most Popular</a>
+                </div>
+
+                <div class="pricing-card fade-in">
+                    <div class="plan-name">Enterprise</div>
+                    <div class="plan-price">$10,000</div>
+                    <div class="plan-period">Minimum Investment</div>
+                    <ul class="plan-features">
+                        <li>12% Monthly Returns</li>
+                        <li>Expert Market Analysis</li>
+                        <li>24/7 Phone Support</li>
+                        <li>Real-time Notifications</li>
+                        <li>Personal Investment Advisor</li>
+                        <li>Custom Investment Strategies</li>
+                        <li>VIP Access to New Features</li>
+                    </ul>
+                    <a href="#" class="cta-button">Go Premium</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="testimonials" id="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Clients Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-content">
+                        "CryptoPro has completely transformed my investment portfolio. In just 6 months, I've seen incredible returns and the support team is always available to help."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">JD</div>
+                        <div class="author-info">
+                            <h4>John Davidson</h4>
+                            <p>Professional Plan - 8 months</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-content">
+                        "The transparency and professionalism of CryptoPro is unmatched. I started with the Starter plan and quickly upgraded to Enterprise. Best decision I've made!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SM</div>
+                        <div class="author-info">
+                            <h4>Sarah Martinez</h4>
+                            <p>Enterprise Plan - 1 year</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-content">
+                        "I was skeptical about Bitcoin investments, but CryptoPro's expert guidance and consistent returns have made me a believer. Highly recommended!"
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RJ</div>
+                        <div class="author-info">
+                            <h4>Robert Johnson</h4>
+                            <p>Professional Plan - 10 months</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-content">
+                        "The monthly returns have exceeded my expectations. The platform is user-friendly and the market analysis reports are incredibly detailed and helpful."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">EA</div>
+                        <div class="author-info">
+                            <h4>Emily Adams</h4>
+                            <p>Starter Plan - 5 months</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-content">
+                        "CryptoPro's Enterprise plan has given me access to strategies I never knew existed. My personal advisor is knowledgeable and always accessible."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MK</div>
+                        <div class="author-info">
+                            <h4>Michael Kim</h4>
+                            <p>Enterprise Plan - 2 years</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in">
+                    <div class="stars">★★★★★</div>
+                    <div class="testimonial-content">
+                        "Started small with the Starter plan and have been consistently impressed. The team's expertise and the platform's security give me complete confidence."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">LW</div>
+                        <div class="author-info">
+                            <h4>Lisa Williams</h4>
+                            <p>Professional Plan - 7 months</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <p>Email: support@cryptopro.com</p>
+                    <p>Phone: +1 (555) 123-4567</p>
+                    <p>Address: 123 Finance Street, NY 10001</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Legal</h3>
+                    <p><a href="#">Terms of Service</a></p>
+                    <p><a href="#">Privacy Policy</a></p>
+                    <p><a href="#">Risk Disclosure</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <p><a href="#">About Us</a></p>
+                    <p><a href="#">Careers</a></p>
+                    <p><a href="#">Press</a></p>
+                </div>
+            </div>
+            <p style="color: #666; margin-top: 2rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 2rem; font-family: 'Great Vibes', cursive;">
+                © 2021 CryptoPro. All rights reserved. | Licensed and Regulated Investment Platform
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Simulate live Bitcoin price updates
+        function updateBitcoinPrice() {
+            const priceElement = document.getElementById('btc-price');
+            const changeElement = document.getElementById('btc-change');
+            
+            // Simulate price fluctuation
+            const basePrice = 95847;
+            const fluctuation = (Math.random() - 0.5) * 2000;
+            const newPrice = Math.round(basePrice + fluctuation);
+            
+            const change = ((newPrice - basePrice) / basePrice * 100).toFixed(2);
+            
+            priceElement.textContent = `$${newPrice.toLocaleString()}`;
+            changeElement.textContent = `${change >= 0 ? '+' : ''}${change}%`;
+            changeElement.style.color = change >= 0 ? '#4CAF50' : '#f44336';
+        }
+
+        // Create price chart
+        function createPriceChart() {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            
+            // Generate sample data for last 30 days
+            const labels = [];
+            const data = [];
+            const basePrice = 85000;
+            
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                
+                const price = basePrice + (Math.random() * 20000) + (i * 300);
+                data.push(price);
+            }
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Bitcoin Price',
+                        data: data,
+                        borderColor: '#f7931a',
+                        backgroundColor: 'rgba(247, 147, 26, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                color: '#b0b0b0',
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#b0b0b0'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Fade in animation on scroll
+        function handleScrollAnimation() {
+            const elements = document.querySelectorAll('.fade-in');
+            
+            elements.forEach(element => {
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < window.innerHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Initialize everything when page loads
+        window.addEventListener('load', function() {
+            createPriceChart();
+            updateBitcoinPrice();
+            handleScrollAnimation();
+            
+            // Update price every 5 seconds
+            setInterval(updateBitcoinPrice, 5000);
+        });
+
+        // Handle scroll events
+        window.addEventListener('scroll', handleScrollAnimation);
+
+        // Add hover effects to pricing cards
+        document.querySelectorAll('.pricing-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                if (this.classList.contains('featured')) {
+                    this.style.transform = 'scale(1.05)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
